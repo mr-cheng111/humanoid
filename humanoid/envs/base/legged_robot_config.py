@@ -33,13 +33,67 @@ from .base_config import BaseConfig
 
 class LeggedRobotCfg(BaseConfig):
     class env:
+        # change the observation dim
+        num_active_dofs = 12
+        num_passive_dofs = 0
+        num_commands = 5
+
+        frame_stack = 15
+        c_frame_stack = 3
+
+        obs_names = ["command_input", "dof_pos", "dof_vel", "actions", "base_ang_vel", "base_euler_xyz"]
+        privileged_obs_names = [
+            "command_input", "dof_pos", "dof_vel", "actions", "target_dof_pos",
+            "base_lin_vel", "base_ang_vel", "base_euler_xyz", "rand_push_force", "rand_push_force",
+            "env_frictions", "body_mass", "stance_mask", "contact_mask"
+        ]
+
+        env_spacing = 3.  # not used with heightfields/trimeshes
+        send_timeouts = True  # send time out information to the algorithm
         num_envs = 4096
-        num_observations = 235
-        num_privileged_obs = None # if not None a priviledge_obs_buf will be returned by step() (critic obs for assymetric training). None is returned otherwise 
-        num_actions = 12
-        env_spacing = 3.  # not used with heightfields/trimeshes 
-        send_timeouts = True # send time out information to the algorithm
-        episode_length_s = 20 # episode length in seconds
+        episode_length_s = 20     # episode length in seconds
+        use_ref_actions = False   # speed up training by using reference actions
+
+        def get_obs_dim(self, name):
+            if name == "command_input":
+                return self.num_commands
+            elif name in ["dof_pos", "dof_vel", "actions", "target_dof_pos"]:
+                return self.num_active_dofs
+            elif name in ["base_lin_vel", "base_ang_vel"]:
+                return 3
+            elif name in ["rand_push_force", "rand_push_force"]:
+                return 3
+            elif name in ["env_frictions", "body_mass"]:
+                return 1
+            elif name.startswith("base_euler"):
+                axis = list(name.lower().split("_")[-1])
+                assert len(axis) == len(set(axis)) and set(axis).issubset({"x", "y", "z"})
+                return len(axis)
+            elif name in ["stance_mask", "contact_mask"]:
+                return 2
+            else:
+                raise NotImplementedError
+
+        @property
+        def num_single_obs(self):
+            return sum([self.get_obs_dim(name) for name in self.obs_names])
+
+        @property
+        def single_num_privileged_obs(self):
+            return sum([self.get_obs_dim(name) for name in self.privileged_obs_names])
+
+
+        @property
+        def num_actions(self):
+            return self.num_active_dofs
+
+        @property
+        def num_observations(self):
+            return int(self.frame_stack * self.num_single_obs)
+
+        @property
+        def num_privileged_obs(self):
+            return int(self.c_frame_stack * self.single_num_privileged_obs)
 
     class terrain:
         mesh_type = 'trimesh' # "heightfield" # none, plane, heightfield or trimesh
@@ -152,12 +206,6 @@ class LeggedRobotCfg(BaseConfig):
         max_contact_force = 100. # forces above this value are penalized
 
     class normalization:
-        class obs_scales:
-            lin_vel = 2.0
-            ang_vel = 0.25
-            dof_pos = 1.0
-            dof_vel = 0.05
-            height_measurements = 5.0
         clip_observations = 100.
         clip_actions = 100.
 
@@ -225,6 +273,7 @@ class LeggedRobotCfgPPO(BaseConfig):
         algorithm_class_name = 'PPO'
         num_steps_per_env = 24 # per iteration
         max_iterations = 1500 # number of policy updates
+        empirical_normalization = True
 
         # logging
         save_interval = 100 # check for potential saves every this many iterations

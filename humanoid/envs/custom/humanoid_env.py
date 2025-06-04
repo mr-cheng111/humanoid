@@ -163,29 +163,6 @@ class XBotLFreeEnv(LeggedRobot):
         self._create_envs()
 
 
-    def _get_noise_scale_vec(self, cfg):
-        """ Sets a vector used to scale the noise added to the observations.
-            [NOTE]: Must be adapted when changing the observations structure
-
-        Args:
-            cfg (Dict): Environment config file
-
-        Returns:
-            [torch.Tensor]: Vector of scales used to multiply a uniform distribution in [-1, 1]
-        """
-        noise_vec = torch.zeros(
-            self.cfg.env.num_single_obs, device=self.device)
-        self.add_noise = self.cfg.noise.add_noise
-        noise_scales = self.cfg.noise.noise_scales
-        noise_vec[0: 5] = 0.  # commands
-        noise_vec[5: 17] = noise_scales.dof_pos * self.obs_scales.dof_pos
-        noise_vec[17: 29] = noise_scales.dof_vel * self.obs_scales.dof_vel
-        noise_vec[29: 41] = 0.  # previous actions
-        noise_vec[41: 44] = noise_scales.ang_vel * self.obs_scales.ang_vel   # ang vel
-        noise_vec[44: 47] = noise_scales.quat * self.obs_scales.quat         # euler x,y
-        return noise_vec
-
-
     def step(self, actions):
         if self.cfg.env.use_ref_actions:
             actions += self.ref_action
@@ -196,69 +173,58 @@ class XBotLFreeEnv(LeggedRobot):
         actions += self.cfg.domain_rand.action_noise * torch.randn_like(actions) * actions
         return super().step(actions)
 
+    def get_obs(self, name):
+        if name in [
+            "dof_pos", "dof_vel", "actions",
+            "base_lin_vel", "base_ang_vel",
+            "rand_push_force", "rand_push_torque", "env_frictions", "body_mass"
+        ]:
+            return getattr(self, name)
+        elif name.startswith("base_euler"):
+            axis = list(name.lower().split("_")[-1])
+            assert len(axis) == len(set(axis)) and set(axis).issubset({"x", "y", "z"})
+            index = ["xyz".index(ax) for ax in axis]
+            return self.base_euler_xyz[:, index]
+        elif name == "command_input":
+            phase = self._get_phase()
+            sin_pos = torch.sin(2 * torch.pi * phase).unsqueeze(1)
+            cos_pos = torch.cos(2 * torch.pi * phase).unsqueeze(1)
+            return torch.cat((sin_pos, cos_pos, self.commands[:, :3]), dim=1)
+        elif name == "stance_mask":
+            return self._get_gait_phase()
+        elif name == "contact_mask":
+            return self.contact_forces[:, self.feet_indices, 2] > 5.
+        elif name == "target_dof_pos":
+            self.compute_ref_state()
+            return self.ref_dof_pos
+        elif name == "measure_heights":
+            return torch.clip(self.root_states[:, 2].unsqueeze(1) - 0.5 - self.measured_heights, -1, 1.)
+        else:
+            raise NotImplemented
+
+    def get_obs_noise(self, name):
+        if name in ["command_input", "actions"]:
+            return torch.zeros((self.num_envs, self.cfg.env.get_obs_dim(name)), device=self.device)
+        elif name in ["dof_pos", "dof_vel", "actions", "base_lin_vel", "base_ang_vel"]:
+            scale = getattr(self.cfg.noise.noise_scales, name)
+            return torch.ones((self.num_envs, self.cfg.env.get_obs_dim(name)), device=self.device) * scale
+        elif name.startswith("base_euler"):
+            scale = getattr(self.cfg.noise.noise_scales, "base_euler")
+            return torch.ones((self.num_envs, self.cfg.env.get_obs_dim(name)), device=self.device) * scale
+        else:
+            raise NotImplemented
 
     def compute_observations(self):
+        privileged_obs_now = torch.cat([self.get_obs(name) for name in self.cfg.env.privileged_obs_names], dim=-1)
+        obs_now = torch.cat([self.get_obs(name) for name in self.cfg.env.obs_names], dim=-1)
 
-        phase = self._get_phase()
-        self.compute_ref_state()
+        if self.cfg.noise.add_noise:
+            noise = torch.cat([self.get_obs_noise(name) for name in self.cfg.env.obs_names], dim=-1)
+            obs_now += noise * self.cfg.noise.noise_level
 
-        sin_pos = torch.sin(2 * torch.pi * phase).unsqueeze(1)
-        cos_pos = torch.cos(2 * torch.pi * phase).unsqueeze(1)
-
-        stance_mask = self._get_gait_phase()
-        contact_mask = self.contact_forces[:, self.feet_indices, 2] > 5.
-
-        self.command_input = torch.cat(
-            (sin_pos, cos_pos, self.commands[:, :3] * self.commands_scale), dim=1)
-        
-        q = (self.dof_pos - self.default_dof_pos) * self.obs_scales.dof_pos
-        dq = self.dof_vel * self.obs_scales.dof_vel
-        
-        diff = self.dof_pos - self.ref_dof_pos
-
-        self.privileged_obs_buf = torch.cat((
-            self.command_input,  # 2 + 3
-            (self.dof_pos - self.default_joint_pd_target) * \
-            self.obs_scales.dof_pos,  # 12
-            self.dof_vel * self.obs_scales.dof_vel,  # 12
-            self.actions,  # 12
-            diff,  # 12
-            self.base_lin_vel * self.obs_scales.lin_vel,  # 3
-            self.base_ang_vel * self.obs_scales.ang_vel,  # 3
-            self.base_euler_xyz * self.obs_scales.quat,  # 3
-            self.rand_push_force[:, :2],  # 2
-            self.rand_push_torque,  # 3
-            self.env_frictions,  # 1
-            self.body_mass / 30.,  # 1
-            stance_mask,  # 2
-            contact_mask,  # 2
-        ), dim=-1)
-
-        obs_buf = torch.cat((
-            self.command_input,  # 5 = 2D(sin cos) + 3D(vel_x, vel_y, aug_vel_yaw)
-            q,    # 12D
-            dq,  # 12D
-            self.actions,   # 12D
-            self.base_ang_vel * self.obs_scales.ang_vel,  # 3
-            self.base_euler_xyz * self.obs_scales.quat,  # 3
-        ), dim=-1)
-
-        if self.cfg.terrain.measure_heights:
-            heights = torch.clip(self.root_states[:, 2].unsqueeze(1) - 0.5 - self.measured_heights, -1, 1.) * self.obs_scales.height_measurements
-            self.privileged_obs_buf = torch.cat((self.obs_buf, heights), dim=-1)
-        
-        if self.add_noise:  
-            obs_now = obs_buf.clone() + torch.randn_like(obs_buf) * self.noise_scale_vec * self.cfg.noise.noise_level
-        else:
-            obs_now = obs_buf.clone()
         self.obs_history.append(obs_now)
-        self.critic_history.append(self.privileged_obs_buf)
-
-
-        obs_buf_all = torch.stack([self.obs_history[i]
-                                   for i in range(self.obs_history.maxlen)], dim=1)  # N,T,K
-
-        self.obs_buf = obs_buf_all.reshape(self.num_envs, -1)  # N, T*K
+        self.critic_history.append(privileged_obs_now)
+        self.obs_buf =  torch.cat([self.obs_history[i] for i in range(self.cfg.env.frame_stack)], dim=1)
         self.privileged_obs_buf = torch.cat([self.critic_history[i] for i in range(self.cfg.env.c_frame_stack)], dim=1)
 
     def reset_idx(self, env_ids):

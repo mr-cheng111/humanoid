@@ -37,13 +37,20 @@ class XBotLCfg(LeggedRobotCfg):
     """
     class env(LeggedRobotCfg.env):
         # change the observation dim
+        num_active_dofs = 12
+        num_passive_dofs = 0
+        num_commands = 5
+
         frame_stack = 15
         c_frame_stack = 3
-        num_single_obs = 47
-        num_observations = int(frame_stack * num_single_obs)
-        single_num_privileged_obs = 73
-        num_privileged_obs = int(c_frame_stack * single_num_privileged_obs)
-        num_actions = 12
+
+        obs_names = ["command_input", "dof_pos", "dof_vel", "actions", "base_ang_vel", "base_euler_xyz"]
+        privileged_obs_names = [
+            "command_input", "dof_pos", "dof_vel", "actions", "target_dof_pos",
+            "base_lin_vel", "base_ang_vel", "base_euler_xyz", "rand_push_force", "rand_push_force",
+            "env_frictions", "body_mass", "stance_mask", "contact_mask"
+        ]
+
         num_envs = 4096
         episode_length_s = 24     # episode length in seconds
         use_ref_actions = False   # speed up training by using reference actions
@@ -58,8 +65,8 @@ class XBotLCfg(LeggedRobotCfg):
         file = '{LEGGED_GYM_ROOT_DIR}/resources/robots/XBot/urdf/XBot-L.urdf'
 
         name = "XBot-L"
-        foot_name = "ankle_roll"
-        knee_name = "knee"
+        foot_names = ['left_ankle_roll_link', 'right_ankle_roll_link']
+        knee_names = ['left_knee_link', 'right_knee_link']
 
         terminate_after_contacts_on = ['base_link']
         penalize_contacts_on = ["base_link"]
@@ -92,9 +99,9 @@ class XBotLCfg(LeggedRobotCfg):
         class noise_scales:
             dof_pos = 0.05
             dof_vel = 0.5
-            ang_vel = 0.1
-            lin_vel = 0.05
-            quat = 0.03
+            base_ang_vel = 0.1
+            base_lin_vel = 0.05
+            base_euler = 0.03
             height_measurements = 0.1
 
     class init_state(LeggedRobotCfg.init_state):
@@ -216,13 +223,6 @@ class XBotLCfg(LeggedRobotCfg):
             collision = -1.
 
     class normalization:
-        class obs_scales:
-            lin_vel = 2.
-            ang_vel = 1.
-            dof_pos = 1.
-            dof_vel = 0.05
-            quat = 1.
-            height_measurements = 5.0
         clip_observations = 18.
         clip_actions = 18.
 
@@ -244,18 +244,10 @@ class XBotLCfgPPO(LeggedRobotCfgPPO):
         lam = 0.9
         num_mini_batches = 4
 
-    class runner:
-        policy_class_name = 'ActorCritic'
-        algorithm_class_name = 'PPO'
+    class runner(LeggedRobotCfgPPO.runner):
         num_steps_per_env = 60  # per iteration
         max_iterations = 3001  # number of policy updates
 
         # logging
         save_interval = 100  # Please check for potential savings every `save_interval` iterations.
         experiment_name = 'XBot_ppo'
-        run_name = ''
-        # Load and resume
-        resume = False
-        load_run = -1  # -1 = last run
-        checkpoint = -1  # -1 = last saved model
-        resume_path = None  # updated from load_run and chkpt

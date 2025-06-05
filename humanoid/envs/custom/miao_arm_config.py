@@ -63,7 +63,7 @@ class MiaoArmCfg(LeggedRobotCfg):
         torque_limit = 0.85
 
     class asset(LeggedRobotCfg.asset):
-        file = '{LEGGED_GYM_ROOT_DIR}/resources/robots/miao_arm/robot.xml'
+        file = '{LEGGED_GYM_ROOT_DIR}/resources/robots/miao_arm/mjcf/robot.xml'
 
         name = "miao_arm"
         foot_names = ["leg_l5_link", "leg_r5_link"]
@@ -156,7 +156,7 @@ class MiaoArmCfg(LeggedRobotCfg):
         randomize_friction = True
         friction_range = [0.1, 2.0]
         randomize_base_mass = True
-        added_mass_range = [-5., 5.]
+        added_mass_range = [-3., 3.]
         push_robots = True
         push_interval_s = 4
         max_push_vel_xy = 0.2
@@ -178,11 +178,11 @@ class MiaoArmCfg(LeggedRobotCfg):
             heading = [-3.14, 3.14]
 
     class rewards:
-        base_height_target = 0.89
+        base_height_target = 0.75
         min_dist = 0.2
         max_dist = 0.5
         # put some settings here for LLM parameter tuning
-        target_joint_pos_scale = 0.17    # rad
+        target_joint_pos_scale = 0.3    # rad
         target_feet_height = 0.06        # m
         cycle_time = 0.64                # sec
         # if true negative total rewards are clipped at zero (avoids early termination problems)
@@ -245,8 +245,8 @@ class MiaoArmfgPPO(LeggedRobotCfgPPO):
 
     class runner(LeggedRobotCfgPPO.runner):
         num_steps_per_env = 60  # per iteration
-        max_iterations = 3001  # number of policy updates
+        max_iterations = 30001  # number of policy updates
 
         # logging
-        save_interval = 100  # Please check for potential savings every `save_interval` iterations.
+        save_interval = 50  # Please check for potential savings every `save_interval` iterations.
         experiment_name = 'miao_arm_ppo'

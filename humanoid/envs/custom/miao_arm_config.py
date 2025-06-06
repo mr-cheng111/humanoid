@@ -60,7 +60,7 @@ class MiaoArmCfg(LeggedRobotCfg):
         # safety factors
         pos_limit = 1.0
         vel_limit = 1.0
-        torque_limit = 0.85
+        torque_limit = 1.0
 
     class asset(LeggedRobotCfg.asset):
         file = '{LEGGED_GYM_ROOT_DIR}/resources/robots/miao_arm/mjcf/robot.xml'
@@ -118,14 +118,14 @@ class MiaoArmCfg(LeggedRobotCfg):
         stiffness = {"loin_yaw_joint": 50}
         for lr, idx, value in product(['l', 'r'], range(1, 6), [30., 30., 30., 30., 30]):
             stiffness[f'leg_{lr}{idx}_joint'] = value
-        for lr, name, value in product(['l', 'r'], ["shoulder_pitch", "shoulder_roll", "shoulder_yaw", "arm_pitch"], [30., 30., 30., 30., 30.]):
+        for lr, name, value in product(['l', 'r'], ["shoulder_pitch", "shoulder_roll", "shoulder_yaw", "arm_pitch"], [30., 30., 30., 30.,]):
             stiffness[f'{lr}_{name}_joint'] = value
 
         damping = {"loin_yaw_joint": 5}
         for lr, idx, value in product(['l', 'r'], range(1, 6), [3] * 5):
             damping[f'leg_{lr}{idx}_joint'] = value
         for lr, name, value in product(['l', 'r'], ["shoulder_pitch", "shoulder_roll", "shoulder_yaw", "arm_pitch"],
-                                       [3] * 5):
+                                       [3] * 4):
             damping[f'{lr}_{name}_joint'] = value
 
         # action scale: target angle = actionScale * action + defaultAngle

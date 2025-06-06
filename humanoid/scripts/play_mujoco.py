@@ -12,13 +12,15 @@ import onnxruntime
 from scipy.spatial.transform import Rotation
 
 BASE_PATH = path.dirname(path.dirname(path.dirname(__file__)))
-KUAVO_MJCF_PATH = path.join(BASE_PATH, "resources", "robots", "XBot", "mjcf", "robot.xml")
+KUAVO_MJCF_PATH = path.join(BASE_PATH, "resources", "robots", "miao_arm", "mjcf", "robot.xml")
 
-P_GAINS = [200, 200, 350, 350, 15, 15, 200, 200, 350, 350, 15, 15]
-D_GAINS = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+DOF_NUM = 19
 
-DEFAULT_HEIGHT = 0.9
-DEFAULT_JOINT_POS = [0] * 12
+P_GAINS = [50.] + [30.] * 18
+D_GAINS = [5.] + [3.] * 18
+
+DEFAULT_HEIGHT = 0.75
+DEFAULT_JOINT_POS = [0] * 19
 
 PERIOD_LENGTH = 0.64
 INPUT_LIST =["command", "dof_pos", "dof_vel", "actions", "base_ang_vel", "base_euler_xyz"]
@@ -33,7 +35,7 @@ class PlayMujoco:
             change_period=False,
             frame_stack=15,
             frame_stack_skip=1,
-            dof_num=12,
+            dof_num=DOF_NUM,
             robot_xml_path=KUAVO_MJCF_PATH,
             control_freq=10,
             p_gains=None,
@@ -178,7 +180,8 @@ class PlayMujoco:
         return obs_now
 
     def play(self, stdscr):
-        curses.curs_set(0)
+        if stdscr is not None:
+            curses.curs_set(0)
 
         dof_pos_list = []
         torque_list = []
@@ -186,8 +189,9 @@ class PlayMujoco:
 
         with mujoco.viewer.launch_passive(self.model, self.data) as viewer:
             while viewer.is_running():
-                self.update_command(stdscr)
-                self.show_command(stdscr)
+                if stdscr is not None:
+                    self.update_command(stdscr)
+                    self.show_command(stdscr)
 
                 start_time = time.time()
                 self.act()
@@ -221,5 +225,5 @@ if __name__ == '__main__':
     change_period = "amass" in args.onnx_path
 
     play_mujoco = PlayMujoco(onnx_path=args.onnx_path, change_period=change_period)
-    curses.wrapper(play_mujoco.play)
-    # play_mujoco.play(None)
+    # curses.wrapper(play_mujoco.play)
+    play_mujoco.play(None)

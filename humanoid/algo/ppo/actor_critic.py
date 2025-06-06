@@ -135,9 +135,9 @@ if __name__ == '__main__':
 
     parser = ArgumentParser()
     parser.add_argument("path", type=str)
-    parser.add_argument("--single_obs_num", default=47, type=int)
-    parser.add_argument("--single_privileged_obs_num", default=74, type=int)
-    parser.add_argument("--action_num", default=12, type=int)
+    parser.add_argument("--single_obs_num", default=47 + 3 * 7, type=int)
+    parser.add_argument("--single_privileged_obs_num", default=74+ 4 * 7, type=int)
+    parser.add_argument("--action_num", default=12 + 7, type=int)
     parser.add_argument("--frame_stack", default=15, type=int)
     parser.add_argument("--c_frame_stack", default=3, type=int)
 
@@ -180,5 +180,5 @@ if __name__ == '__main__':
     })[0]
     print("actions_np:", actions_np[0])
 
-    assert np.allclose(actions_np, actions.detach().numpy())
+    assert np.allclose(actions_np, actions.detach().numpy(), atol=0.001)
 

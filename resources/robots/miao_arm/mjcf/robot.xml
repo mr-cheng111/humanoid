@@ -40,27 +40,27 @@
         <geom rgba="0 0.7 0.3 0.1" type="box" pos="0.0 0.0 -0.045" quat="1.0 0.0 0.0 0.0" size="0.04 0.05 0.035" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
         <body name="leg_l1_link" pos="0.0 0.05355 -0.0515" quat="1.0 0.0 0.0 0.0">
           <inertial mass="0.5189" pos="0.003422 0.041688 -7.6e-05" quat="0.477051207758947 0.1615360703500239 -0.7244793155155197 0.4705932049464442" diaginertia="0.000309584 0.000307706 0.00030371" />
-          <joint name="leg_l1_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" range="-1.05 1.05" damping="0.0" stiffness="0.0" armature="0.0" frictionloss="0.45" />
+          <joint name="leg_l1_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" range="-1.05 1.05" damping="0.0" stiffness="0.0" armature="0.0" frictionloss="0.075" />
           <geom type="mesh" mesh="leg_l1_link" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.854902 0.67451 0.541176 1.0" />
           <geom rgba="0 0.7 0.3 0.1" type="box" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" size="5e-05 5e-05 5e-05" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
           <body name="leg_l2_link" pos="0.03105 0.042 0.0" quat="1.0 0.0 0.0 0.0">
             <inertial mass="0.1429" pos="-0.029211 1.6e-05 -0.031591" quat="0.5978653600860446 0.3775672274035236 0.3775672274035236 0.5978653600860446" diaginertia="0.000254 0.000173808 0.000153192" />
-            <joint name="leg_l2_joint" type="hinge" pos="0.0 0.0 0.0" axis="1.0 0.0 0.0" range="-0.52 0.785" damping="0.0" stiffness="0.0" armature="0.0" frictionloss="0.45" />
+            <joint name="leg_l2_joint" type="hinge" pos="0.0 0.0 0.0" axis="1.0 0.0 0.0" range="-0.52 0.785" damping="0.0" stiffness="0.0" armature="0.0" frictionloss="0.075" />
             <geom type="mesh" mesh="leg_l2_link" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="1.0 1.0 1.0 1.0" />
             <geom rgba="0 0.7 0.3 0.1" type="box" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" size="5e-05 5e-05 5e-05" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
             <body name="leg_l3_link" pos="-0.03105 0.0 -0.07405" quat="1.0 0.0 0.0 0.0">
               <inertial mass="0.9821" pos="-8.2e-05 0.001688 -0.070672" quat="0.998709467215822 0.0207181096923369 -0.0032466115188283 0.0462560216394716" diaginertia="0.00253617 0.00252125 0.00057658" />
-              <joint name="leg_l3_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 0.0 1.0" range="-0.52 0.785" damping="0.0" stiffness="0.0" armature="0.0" frictionloss="0.45" />
+              <joint name="leg_l3_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 0.0 1.0" range="-0.52 0.785" damping="0.0" stiffness="0.0" armature="0.0" frictionloss="0.075" />
               <geom type="mesh" mesh="leg_l3_link" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.898039 0.917647 0.929412 1.0" />
               <geom rgba="0 0.7 0.3 0.1" type="box" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" size="5e-05 5e-05 5e-05" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
               <body name="leg_l4_link" pos="0.0 0.03105 -0.11705" quat="1.0 0.0 0.0 0.0">
                 <inertial mass="0.5069" pos="0.000193 -0.033837 -0.078429" quat="0.999871027280792 0.0064783001767559 5.1954201417534585e-05 -0.0146955004009566" diaginertia="0.000963118 0.00082696 0.000363922" />
-                <joint name="leg_l4_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" range="-0.3 2.3562" damping="0.0" stiffness="0.0" armature="0.0" frictionloss="0.45" />
+                <joint name="leg_l4_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" range="-0.3 2.3562" damping="0.0" stiffness="0.0" armature="0.0" frictionloss="0.075" />
                 <geom type="mesh" mesh="leg_l4_link" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.854902 0.67451 0.541176 1.0" />
                 <geom rgba="0 0.7 0.3 0.1" type="box" pos="0.0 -0.03 -0.1" quat="1.0 0.0 0.0 0.0" size="0.0205 0.035 0.075" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
                 <body name="leg_l5_link" pos="-1.6188e-05 -0.01955 -0.20287" quat="1.0 0.0 0.0 0.0">
                   <inertial mass="0.2472" pos="0.00260998 -0.00912783 0.0166971" quat="0.3071679044288681 0.6259468052451321 0.6777817891173791 0.2333459273975761" diaginertia="0.0012183 0.000880174 0.000430339" />
-                  <joint name="leg_l5_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" range="-1.047 0.3" damping="0.0" stiffness="0.0" armature="0.05" frictionloss="0.45" />
+                  <joint name="leg_l5_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" range="-1.047 0.3" damping="0.0" stiffness="0.0" armature="0.05" frictionloss="0.075" />
                   <geom type="mesh" mesh="leg_l5_link" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.854902 0.67451 0.541176 1.0" />
                   <geom rgba="0 0.7 0.3 0.1" type="box" pos="0.027 -0.012 -0.012" quat="1.0 0.0 0.0 0.0" size="0.0875 0.025 0.01" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
                   <geom rgba="0 0.7 0.3 0.1" type="sphere" pos="0.113 -0.012 -0.003" quat="1.0 0.0 0.0 0.0" size="0.001 0.0 0.0" contype="0" conaffinity="0" friction="1.0 0.005 0.0001" />
@@ -74,27 +74,27 @@
         </body>
         <body name="leg_r1_link" pos="0.0 -0.05355 -0.0515" quat="1.0 0.0 0.0 0.0">
           <inertial mass="0.5189" pos="0.00342 -0.041705 -8.4e-05" quat="0.1615360703500239 0.477051207758947 -0.4705932049464442 0.7244793155155197" diaginertia="0.000309584 0.000307706 0.00030371" />
-          <joint name="leg_r1_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" range="-1.05 1.05" damping="0.0" stiffness="0.0" armature="0.0" frictionloss="0.45" />
+          <joint name="leg_r1_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" range="-1.05 1.05" damping="0.0" stiffness="0.0" armature="0.0" frictionloss="0.075" />
           <geom type="mesh" mesh="leg_r1_link" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.898039 0.917647 0.929412 1.0" />
           <geom rgba="0 0.7 0.3 0.1" type="box" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" size="5e-05 5e-05 5e-05" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
           <body name="leg_r2_link" pos="0.03105 -0.042 0.0" quat="1.0 0.0 0.0 0.0">
             <inertial mass="0.1429" pos="-0.029211 1.6e-05 -0.031544" quat="0.5978653600860446 0.3775672274035236 0.3775672274035236 0.5978653600860446" diaginertia="0.000254 0.000173808 0.000153192" />
-            <joint name="leg_r2_joint" type="hinge" pos="0.0 0.0 0.0" axis="1.0 0.0 0.0" range="-0.785 0.52" damping="0.0" stiffness="0.0" armature="0.0" frictionloss="0.45" />
+            <joint name="leg_r2_joint" type="hinge" pos="0.0 0.0 0.0" axis="1.0 0.0 0.0" range="-0.785 0.52" damping="0.0" stiffness="0.0" armature="0.0" frictionloss="0.075" />
             <geom type="mesh" mesh="leg_r2_link" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="1.0 1.0 1.0 1.0" />
             <geom rgba="0 0.7 0.3 0.1" type="box" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" size="5e-05 5e-05 5e-05" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
             <body name="leg_r3_link" pos="-0.03105 0.0 -0.07405" quat="1.0 0.0 0.0 0.0">
               <inertial mass="0.9821" pos="0.00017 -0.001688 -0.070673" quat="0.9994190761366344 -0.0208749015902685 0.0007236900551313 -0.0269300020515515" diaginertia="0.00253606 0.00252134 0.000576607" />
-              <joint name="leg_r3_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 0.0 1.0" range="-0.785 0.52" damping="0.0" stiffness="0.0" armature="0.0" frictionloss="0.45" />
+              <joint name="leg_r3_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 0.0 1.0" range="-0.785 0.52" damping="0.0" stiffness="0.0" armature="0.0" frictionloss="0.075" />
               <geom type="mesh" mesh="leg_r3_link" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.898039 0.917647 0.929412 1.0" />
               <geom rgba="0 0.7 0.3 0.1" type="box" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" size="5e-05 5e-05 5e-05" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
               <body name="leg_r4_link" pos="0.0 -0.03105 -0.11705" quat="1.0 0.0 0.0 0.0">
                 <inertial mass="0.5069" pos="0.000261 0.033885 -0.078429" quat="0.999918265120372 -0.0064927017214882 -0.0007957512109871 0.0109852029126391" diaginertia="0.000963067 0.000827012 0.00036392" />
-                <joint name="leg_r4_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" range="-0.3 2.3562" damping="0.0" stiffness="0.0" armature="0.0" frictionloss="0.45" />
+                <joint name="leg_r4_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" range="-0.3 2.3562" damping="0.0" stiffness="0.0" armature="0.0" frictionloss="0.075" />
                 <geom type="mesh" mesh="leg_r4_link" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.898039 0.917647 0.929412 1.0" />
                 <geom rgba="0 0.7 0.3 0.1" type="box" pos="0.0 0.03 -0.1" quat="1.0 0.0 0.0 0.0" size="0.0205 0.035 0.075" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
                 <body name="leg_r5_link" pos="0.0 0.0196 -0.20286" quat="1.0 0.0 0.0 0.0">
                   <inertial mass="0.2472" pos="0.00260814 0.00912783 0.0166953" quat="0.2333469473324332 0.6777818470212655 0.6259458587209059 0.3071689306704444" diaginertia="0.0012183 0.000880174 0.000430339" />
-                  <joint name="leg_r5_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" range="-1.047 0.3" damping="0.0" stiffness="0.0" armature="0.05" frictionloss="0.45" />
+                  <joint name="leg_r5_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" range="-1.047 0.3" damping="0.0" stiffness="0.0" armature="0.05" frictionloss="0.075" />
                   <geom type="mesh" mesh="leg_r5_link" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.854902 0.67451 0.541176 1.0" />
                   <geom rgba="0 0.7 0.3 0.1" type="box" pos="0.027 0.012 -0.012" quat="1.0 0.0 0.0 0.0" size="0.0875 0.025 0.01" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
                   <geom rgba="0 0.7 0.3 0.1" type="sphere" pos="0.113 0.012 -0.003" quat="1.0 0.0 0.0 0.0" size="0.001 0.0 0.0" contype="0" conaffinity="0" friction="1.0 0.005 0.0001" />
@@ -124,7 +124,7 @@
             <geom rgba="0 0.7 0.3 0.1" type="box" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" size="5e-05 5e-05 5e-05" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
             <body name="l_arm_pitch_link" pos="1.5621e-05 -0.022375 -0.102" quat="0.707 0.0 0.707 0.0">
               <inertial mass="0.0956" pos="0.036507 0.023087 0.0" quat="0.0317832054201099 0.7063921204637146 -0.0317832054201099 0.7063921204637146" diaginertia="0.000133 9.40902e-05 8.29098e-05" />
-              <joint name="l_arm_pitch_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" range="-0.3 3.14" damping="0.0" stiffness="0.0" armature="0.0" frictionloss="0.055" />
+              <joint name="l_arm_pitch_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" range="-0.3 3.14" damping="0.0" stiffness="0.05" armature="0.0" frictionloss="0.055" />
               <geom type="mesh" mesh="l_arm_pitch_link" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.854902 0.67451 0.541176 1.0" />
               <geom rgba="0 0.7 0.3 0.1" type="box" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" size="5e-05 5e-05 5e-05" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
             </body>
@@ -148,7 +148,7 @@
             <geom rgba="0 0.7 0.3 0.1" type="box" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" size="5e-05 5e-05 5e-05" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
             <body name="r_arm_pitch_link" pos="-1.5621e-05 0.022375 -0.102" quat="0.707 0.0 0.707 0.0">
               <inertial mass="0.0956" pos="0.036539 -0.023035 0.0" quat="-0.0317832054201099 0.7063921204637146 0.0317832054201099 0.7063921204637146" diaginertia="0.000133 9.40902e-05 8.29098e-05" />
-              <joint name="r_arm_pitch_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" range="-0.3 3.14" damping="0.0" stiffness="0.0" armature="0.0" frictionloss="0.055" />
+              <joint name="r_arm_pitch_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" range="-0.3 3.14" damping="0.0" stiffness="0.0" armature="0.05" frictionloss="0.055" />
               <geom type="mesh" mesh="r_arm_pitch_link" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.854902 0.67451 0.541176 1.0" />
               <geom rgba="0 0.7 0.3 0.1" type="box" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" size="5e-05 5e-05 5e-05" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
             </body>
@@ -157,7 +157,7 @@
       </body>
     </body>
     <light pos="0 0 3.5" dir="0 0 -1" directional="true" />
-    <geom name="floor" size="0 0 0.05" type="plane" material="groundplane" condim="3" conaffinity="15" />
+    <geom name="floor" size="0 0 0.05" type="plane" material="groundplane" condim="3" conaffinity="15"  friction="2.0 0.005 0.0001"  />
   </worldbody>
   <actuator>
     <motor name="loin_yaw_joint_motor" joint="loin_yaw_joint" ctrlrange="-12.0 12.0" />

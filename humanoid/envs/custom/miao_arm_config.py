@@ -70,6 +70,8 @@ class MiaoArmCfg(LeggedRobotCfg):
         knee_names = ["leg_l4_link", "leg_r4_link"]
 
         terminate_after_contacts_on = ['base_link']
+        for lr, name in product(['l', 'r'], ["shoulder_pitch", "shoulder_roll", "shoulder_yaw", "arm_pitch"]):
+            terminate_after_contacts_on.append(f'{lr}_{name}_link')
         penalize_contacts_on = ["base_link"]
         self_collisions = 0  # 1 to disable, 0 to enable...bitwise filter
         flip_visual_attachments = False
@@ -115,17 +117,17 @@ class MiaoArmCfg(LeggedRobotCfg):
             default_joint_angles[f'{lr}_{name}_joint'] = 0.
 
     class control(LeggedRobotCfg.control):
-        stiffness = {"loin_yaw_joint": 50}
+        stiffness = {"loin_yaw_joint": 30.}
         for lr, idx, value in product(['l', 'r'], range(1, 6), [30., 30., 30., 30., 30]):
             stiffness[f'leg_{lr}{idx}_joint'] = value
         for lr, name, value in product(['l', 'r'], ["shoulder_pitch", "shoulder_roll", "shoulder_yaw", "arm_pitch"], [30., 30., 30., 30.,]):
             stiffness[f'{lr}_{name}_joint'] = value
 
-        damping = {"loin_yaw_joint": 5}
-        for lr, idx, value in product(['l', 'r'], range(1, 6), [3] * 5):
+        damping = {"loin_yaw_joint": 3.}
+        for lr, idx, value in product(['l', 'r'], range(1, 6), [3.] * 5):
             damping[f'leg_{lr}{idx}_joint'] = value
         for lr, name, value in product(['l', 'r'], ["shoulder_pitch", "shoulder_roll", "shoulder_yaw", "arm_pitch"],
-                                       [3] * 4):
+                                       [3.] * 4):
             damping[f'{lr}_{name}_joint'] = value
 
         # action scale: target angle = actionScale * action + defaultAngle
@@ -169,7 +171,7 @@ class MiaoArmCfg(LeggedRobotCfg):
         # Vers: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         num_commands = 4
         resampling_time = 8.  # time before command are changed[s]
-        heading_command = True  # if true: compute ang vel command from heading error
+        heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
             lin_vel_x = [-0.3, 0.6]   # min max [m/s]
@@ -237,6 +239,7 @@ class MiaoArmfgPPO(LeggedRobotCfgPPO):
 
     class algorithm(LeggedRobotCfgPPO.algorithm):
         entropy_coef = 0.001
+        symm_loss_coef = 0.3
         learning_rate = 1e-5
         num_learning_epochs = 2
         gamma = 0.994

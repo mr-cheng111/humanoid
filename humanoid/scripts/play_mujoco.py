@@ -16,8 +16,8 @@ KUAVO_MJCF_PATH = path.join(BASE_PATH, "resources", "robots", "miao_arm", "mjcf"
 
 DOF_NUM = 19
 
-P_GAINS = [50.] + [30.] * 18
-D_GAINS = [5.] + [3.] * 18
+P_GAINS = [30.] * 19
+D_GAINS = [3.] * 19
 
 DEFAULT_HEIGHT = 0.75
 DEFAULT_JOINT_POS = [0] * 19
@@ -225,5 +225,5 @@ if __name__ == '__main__':
     change_period = "amass" in args.onnx_path
 
     play_mujoco = PlayMujoco(onnx_path=args.onnx_path, change_period=change_period)
-    # curses.wrapper(play_mujoco.play)
-    play_mujoco.play(None)
+    curses.wrapper(play_mujoco.play)
+    # play_mujoco.play(None)

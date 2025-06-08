@@ -35,7 +35,7 @@ from tqdm import tqdm
 from collections import deque
 from scipy.spatial.transform import Rotation as R
 from humanoid import LEGGED_GYM_ROOT_DIR
-from humanoid.envs import XBotLCfg
+from humanoid.envs import MiaoArmCfg
 import torch
 
 
@@ -72,10 +72,10 @@ def get_obs(data):
     '''
     q = data.qpos.astype(np.double)
     dq = data.qvel.astype(np.double)
-    quat = data.sensor('orientation').data[[1, 2, 3, 0]].astype(np.double)
+    quat = data.qpos[3:7][[1, 2, 3, 0]].astype(np.double)
     r = R.from_quat(quat)
     v = r.apply(data.qvel[:3], inverse=True).astype(np.double)  # In the base frame
-    omega = data.sensor('angular-velocity').data.astype(np.double)
+    omega = data.qvel[3:6].astype(np.double)
     gvec = r.apply(np.array([0., 0., -1.]), inverse=True).astype(np.double)
     return (q, dq, quat, v, omega, gvec)
 
@@ -130,11 +130,11 @@ def run_mujoco(policy, cfg):
             obs[0, 2] = cmd.vx
             obs[0, 3] = cmd.vy
             obs[0, 4] = cmd.dyaw
-            obs[0, 5:17] = q
-            obs[0, 17:29] = dq
-            obs[0, 29:41] = action
-            obs[0, 41:44] = omega
-            obs[0, 44:47] = eu_ang
+            obs[0, 5:5+19] = q
+            obs[0, 5+19:5+19*2] = dq
+            obs[0, 5+19*2:5+19*3] = action
+            obs[0, 5+19*3:5+19*3+3] = omega
+            obs[0, 5+19*3+3:5+19*3+6] = eu_ang
 
             obs = np.clip(obs, -cfg.normalization.clip_observations, cfg.normalization.clip_observations)
 
@@ -173,21 +173,18 @@ if __name__ == '__main__':
     parser.add_argument('--terrain', action='store_true', help='terrain or plane')
     args = parser.parse_args()
 
-    class Sim2simCfg(XBotLCfg):
+    class Sim2simCfg(MiaoArmCfg):
 
         class sim_config:
-            if args.terrain:
-                mujoco_model_path = f'{LEGGED_GYM_ROOT_DIR}/resources/robots/XBot/mjcf/XBot-L-terrain.xml'
-            else:
-                mujoco_model_path = f'{LEGGED_GYM_ROOT_DIR}/resources/robots/XBot/mjcf/XBot-L.xml'
+            mujoco_model_path = f'{LEGGED_GYM_ROOT_DIR}/resources/robots/miao_arm/mjcf/robot.xml'
             sim_duration = 60.0
             dt = 0.001
             decimation = 10
 
         class robot_config:
-            kps = np.array([200, 200, 350, 350, 15, 15, 200, 200, 350, 350, 15, 15], dtype=np.double)
-            kds = np.array([10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], dtype=np.double)
-            tau_limit = 200. * np.ones(12, dtype=np.double)
+            kps = np.array([50.] + [30.] * 18, dtype=np.double)
+            kds = np.array([5.] + [3.] * 18, dtype=np.double)
+            tau_limit = 28. * np.ones(19, dtype=np.double)
 
     policy = torch.jit.load(args.load_model)
     run_mujoco(policy, Sim2simCfg())

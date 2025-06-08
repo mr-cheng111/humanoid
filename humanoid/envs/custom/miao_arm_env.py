@@ -45,8 +45,8 @@ class MiaoArmFreeEnv(XBotLFreeEnv):
 
         res[:, 1:11] = torch.roll(res[:, 1:11], shifts=5, dims=-1)
         res[:, 11:19] = torch.roll(res[:, 11:19], shifts=4, dims=-1)
-        value[:, yaw_or_roll] *= -1
-        return value
+        res[:, yaw_or_roll] *= -1
+        return res
 
 # ================================================ Rewards ================================================== #
     def _reward_default_joint_pos(self):

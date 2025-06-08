@@ -124,7 +124,7 @@
             <geom rgba="0 0.7 0.3 0.1" type="box" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" size="5e-05 5e-05 5e-05" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
             <body name="l_arm_pitch_link" pos="1.5621e-05 -0.022375 -0.102" quat="0.707 0.0 0.707 0.0">
               <inertial mass="0.0956" pos="0.036507 0.023087 0.0" quat="0.0317832054201099 0.7063921204637146 -0.0317832054201099 0.7063921204637146" diaginertia="0.000133 9.40902e-05 8.29098e-05" />
-              <joint name="l_arm_pitch_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" range="-0.3 3.14" damping="0.0" stiffness="0.05" armature="0.05" frictionloss="0.055" />
+              <joint name="l_arm_pitch_joint" type="hinge" pos="0.0 0.0 0.0" axis="0.0 1.0 0.0" range="-0.3 3.14" damping="0.0" stiffness="0.0" armature="0.05" frictionloss="0.055" />
               <geom type="mesh" mesh="l_arm_pitch_link" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.854902 0.67451 0.541176 1.0" />
               <geom rgba="0 0.7 0.3 0.1" type="box" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" size="5e-05 5e-05 5e-05" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
             </body>

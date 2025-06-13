@@ -29,14 +29,14 @@
 
 from itertools import product
 
-from humanoid.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
+from humanoid.envs.custom.humanoid_config import XBotLCfg, XBotLCfgPPO
 
 
-class MiaoArmCfg(LeggedRobotCfg):
+class MiaoArmCfg(XBotLCfg):
     """
     Configuration class for the XBotL humanoid robot.
     """
-    class env(LeggedRobotCfg.env):
+    class env(XBotLCfg.env):
         # change the observation dim
         num_active_dofs = 19
         num_passive_dofs = 0
@@ -49,20 +49,23 @@ class MiaoArmCfg(LeggedRobotCfg):
         privileged_obs_names = [
             "command_input", "dof_pos", "dof_vel", "actions", "target_dof_pos",
             "base_lin_vel", "base_ang_vel", "base_euler_xyz", "rand_push_force", "rand_push_force",
-            "env_frictions", "body_mass", "stance_mask", "contact_mask"
+            "friction_coeffs", "restitution_coeffs", "base_mass_coeffs", "base_com_coeffs",
+            "joint_friction_coeffs", "joint_armature_coeffs", "joint_pos_biases",
+            "joint_kp_coeffs", "joint_kd_coeffs",
+            "stance_mask", "contact_mask", "base_euler_bias"
         ]
 
         num_envs = 4096
         episode_length_s = 24     # episode length in seconds
         use_ref_actions = False   # speed up training by using reference actions
 
-    class safety:
+    class safety(XBotLCfg.safety):
         # safety factors
         pos_limit = 1.0
         vel_limit = 1.0
         torque_limit = 1.0
 
-    class asset(LeggedRobotCfg.asset):
+    class asset(XBotLCfg.asset):
         file = '{LEGGED_GYM_ROOT_DIR}/resources/robots/miao_arm/mjcf/robot.xml'
 
         name = "miao_arm"
@@ -78,7 +81,7 @@ class MiaoArmCfg(LeggedRobotCfg):
         replace_cylinder_with_capsule = False
         fix_base_link = False
 
-    class terrain(LeggedRobotCfg.terrain):
+    class terrain(XBotLCfg.terrain):
         mesh_type = 'plane'
         # mesh_type = 'trimesh'
         curriculum = False
@@ -95,7 +98,7 @@ class MiaoArmCfg(LeggedRobotCfg):
         terrain_proportions = [0.2, 0.2, 0.4, 0.1, 0.1, 0, 0]
         restitution = 0.
 
-    class noise:
+    class noise(XBotLCfg.noise):
         add_noise = True
         noise_level = 0.6    # scales other values
 
@@ -107,7 +110,7 @@ class MiaoArmCfg(LeggedRobotCfg):
             base_euler = 0.03
             height_measurements = 0.1
 
-    class init_state(LeggedRobotCfg.init_state):
+    class init_state(XBotLCfg.init_state):
         pos = [0.0, 0.0, 0.75]
 
         default_joint_angles = {"loin_yaw_joint": 0}
@@ -116,7 +119,7 @@ class MiaoArmCfg(LeggedRobotCfg):
         for lr, name in product(['l', 'r'], ["shoulder_pitch", "shoulder_roll", "shoulder_yaw", "arm_pitch"]):
             default_joint_angles[f'{lr}_{name}_joint'] = 0.
 
-    class control(LeggedRobotCfg.control):
+    class control(XBotLCfg.control):
         stiffness = {"loin_yaw_joint": 30.}
         for lr, idx, value in product(['l', 'r'], range(1, 6), [30., 30., 30., 30., 30]):
             stiffness[f'leg_{lr}{idx}_joint'] = value
@@ -135,12 +138,12 @@ class MiaoArmCfg(LeggedRobotCfg):
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 10  # 100hz
 
-    class sim(LeggedRobotCfg.sim):
+    class sim(XBotLCfg.sim):
         dt = 0.001  # 1000 Hz
         substeps = 1
         up_axis = 1  # 0 is y, 1 is z
 
-        class physx(LeggedRobotCfg.sim.physx):
+        class physx(XBotLCfg.sim.physx):
             num_threads = 10
             solver_type = 1  # 0: pgs, 1: tgs
             num_position_iterations = 4
@@ -154,32 +157,22 @@ class MiaoArmCfg(LeggedRobotCfg):
             # 0: never, 1: last sub-step, 2: all sub-steps (default=2)
             contact_collection = 2
 
-    class domain_rand:
-        randomize_friction = True
-        friction_range = [0.1, 2.0]
-        randomize_base_mass = True
-        added_mass_range = [-3., 3.]
-        push_robots = True
-        push_interval_s = 4
-        max_push_vel_xy = 0.2
-        max_push_ang_vel = 0.4
-        # dynamic randomization
-        action_delay = 0.5
-        action_noise = 0.02
+    class domain_rand(XBotLCfg.domain_rand):
+        pass
 
-    class commands(LeggedRobotCfg.commands):
+    class commands(XBotLCfg.commands):
         # Vers: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         num_commands = 4
         resampling_time = 8.  # time before command are changed[s]
         heading_command = False  # if true: compute ang vel command from heading error
 
-        class ranges:
+        class ranges(XBotLCfg.commands.ranges):
             lin_vel_x = [-0.3, 0.6]   # min max [m/s]
             lin_vel_y = [-0.3, 0.3]   # min max [m/s]
             ang_vel_yaw = [-0.3, 0.3] # min max [rad/s]
             heading = [-3.14, 3.14]
 
-    class rewards:
+    class rewards(XBotLCfg.rewards):
         base_height_target = 0.75
         min_dist = 0.2
         max_dist = 0.5
@@ -193,7 +186,7 @@ class MiaoArmCfg(LeggedRobotCfg):
         tracking_sigma = 5
         max_contact_force = 700  # Forces above this value are penalized
 
-        class scales:
+        class scales(XBotLCfg.rewards.scales):
             # reference motion tracking
             joint_pos = 1.6
             feet_clearance = 1.
@@ -223,21 +216,21 @@ class MiaoArmCfg(LeggedRobotCfg):
             dof_acc = -1e-7
             collision = -1.
 
-    class normalization:
+    class normalization(XBotLCfg.normalization):
         clip_observations = 18.
         clip_actions = 18.
 
 
-class MiaoArmfgPPO(LeggedRobotCfgPPO):
+class MiaoArmfgPPO(XBotLCfgPPO):
     seed = 5
     runner_class_name = 'OnPolicyRunner'   # DWLOnPolicyRunner
 
-    class policy:
+    class policy(XBotLCfgPPO.policy):
         init_noise_std = 1.0
         actor_hidden_dims = [512, 256, 128]
         critic_hidden_dims = [768, 256, 128]
 
-    class algorithm(LeggedRobotCfgPPO.algorithm):
+    class algorithm(XBotLCfgPPO.algorithm):
         entropy_coef = 0.001
         symm_loss_coef = 0.3
         learning_rate = 1e-5
@@ -246,7 +239,7 @@ class MiaoArmfgPPO(LeggedRobotCfgPPO):
         lam = 0.9
         num_mini_batches = 4
 
-    class runner(LeggedRobotCfgPPO.runner):
+    class runner(XBotLCfgPPO.runner):
         num_steps_per_env = 60  # per iteration
         max_iterations = 30001  # number of policy updates
 

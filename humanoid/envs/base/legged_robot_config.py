@@ -64,13 +64,13 @@ class LeggedRobotCfg(BaseConfig):
                           "joint_friction_coeffs", "joint_armature_coeffs", "joint_pos_biases",
                           "joint_kp_coeffs", "joint_kd_coeffs"]:
                 return self.num_active_dofs
-            elif name in ["base_lin_vel", "base_ang_vel", "rand_push_force",
-                          "rand_push_force", "base_com_coeffs", "base_euler_bias"]:
+            elif name in ["base_lin_vel", "base_ang_vel", "rand_push_force", "base_com_coeffs",
+                          "base_euler_bias"]:
                 return 3
             elif name in ["friction_coeffs", "restitution_coeffs", "base_mass_coeffs"]:
                 return 1
             elif name.startswith("base_euler"):
-                axis = list(name.lower().split("_")[-1])
+                axis = list(name.replace("base_euler_", ""))
                 assert len(axis) == len(set(axis)) and set(axis).issubset({"x", "y", "z"})
                 return len(axis)
             elif name in ["stance_mask", "contact_mask"]:

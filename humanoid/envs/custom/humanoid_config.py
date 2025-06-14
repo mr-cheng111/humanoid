@@ -185,7 +185,7 @@ class XBotLCfg(LeggedRobotCfg):
         randomize_joint_kd = True
         joint_kd_range = [0.8, 1.2]
 
-        randomize_base_euler_bias = True
+        randomize_base_euler_bias = False
         base_euler_bias_range = [-0.05, 0.05]
 
         push_robots = True

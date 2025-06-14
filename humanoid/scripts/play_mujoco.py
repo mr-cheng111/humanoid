@@ -91,7 +91,7 @@ class PlayMujoco:
         self.pre_action = np.zeros(dof_num)
         self.base_lin_acc = np.zeros(3)
 
-        self.vel_x, self.vel_y, self.vel_yaw = 0.0, 0.0, 0.0
+        self.vel_x, self.vel_y, self.vel_yaw = 0.6, 0.0, 0.0
         self.standing = 0
 
         self.actions = np.zeros(dof_num)
@@ -211,7 +211,7 @@ class PlayMujoco:
                 viewer.sync()
 
                 end_time = time.time()
-                time.sleep(max(0, 0.01 - (end_time - start_time)))
+                time.sleep(max(0, 0.1 - (end_time - start_time)))
                 self.pre_action = self.actions.copy()
 
                 self.qpos_list.append(self.data.qpos.copy())

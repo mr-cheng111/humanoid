@@ -1,0 +1,112 @@
+<mujoco>
+  <option timestep="0.001" iterations='50' solver='PGS' gravity='0 0 -9.81' />
+  <compiler angle="radian" autolimits="true" meshdir="../meshes" />
+  <default>
+    <joint limited="true" armature="0.05" damping="0.01"/>
+    <motor ctrllimited="true" ctrlrange="-100 100"/>
+    <equality solref="0.005 1"/>
+  </default>
+  <asset>
+    <mesh name="base_link" file="base_link.STL" />
+    <mesh name="ll1" file="ll1.STL" />
+    <mesh name="ll2" file="ll2.STL" />
+    <mesh name="ll3" file="ll3.STL" />
+    <mesh name="ll4" file="ll4.STL" />
+    <mesh name="ll5" file="ll5.STL" />
+    <mesh name="rl1" file="rl1.STL" />
+    <mesh name="rl2" file="rl2.STL" />
+    <mesh name="rl3" file="rl3.STL" />
+    <mesh name="rl4" file="rl4.STL" />
+    <mesh name="rl5" file="rl5.STL" />
+    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="3072" />
+    <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3" markrgb="0.8 0.8 0.8" width="300" height="300" />
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.2" />
+  </asset>
+  <worldbody>
+    <body name="base_link" pos="0.0 0.0 0.975" quat="1.0 0.0 0.0 0.0">
+      <inertial mass="25.4" pos="-0.00058348 -3.6892e-07 0.098631" quat="0.999999851 -1.738e-05 0 0" diaginertia="0.13869 0.10486 0.075742" />
+      <joint name="dummy_to_base_link" type="free" pos="0.0 0.0 0.0" axis="0.0 0.0 1.0" range="0.0 0.0" damping="0.0" stiffness="0.0" armature="0.0" frictionloss="0.0" />
+      <geom type="mesh" mesh="base_link" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.65098 0.61961 0.58824 1" />
+      <geom rgba="0 0.7 0.3 0.5" type="box" pos="0.0 0.0 0.10" quat="1.0 0.0 0.0 0.0" size="0.05 0.08 0.10" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
+      <body name="ll1" pos="-0.055306 0.0925 -0.043" quat="1.0 0.0 0.0 0.0">
+        <inertial mass="1.73" pos="0.0203 0.0203 -0.021882" quat="0.678165 0.678164 -0.200231 0.200231" diaginertia="0.00064365 0.00040381 0.00057925" />
+        <joint name="left_leg_hip_roll" type="hinge" pos="0.0 0.0 0.0" axis="-1 0 0" range="-1.57 0.17" damping="0.0" stiffness="0.0" armature="0.05" frictionloss="0.175" />
+        <geom type="mesh" mesh="ll1" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.65098 0.61961 0.58824 1" />
+        <geom rgba="0 0.7 0.3 0.5" type="cylinder" pos="0.02 0.0 0.0" quat="0.707 0.0 0.707 0.0" size="0.025 0.025" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
+        <body name="ll2" pos="0.0540088 0 -0.0425" quat="1.0 0.0 0.0 0.0">
+          <inertial mass="0.55" pos="-0.011966 -9.5758e-09 -0.023875" quat="0.44166 0.44166 -0.552211 0.552211" diaginertia="0.00030663 0.00020556 0.00040354" />
+          <joint name="left_leg_hip_yaw" type="hinge" pos="0.0 0.0 0.0" axis="0 0 1" range="-0.79 0.79" damping="0.0" stiffness="0.0" armature="0.05" frictionloss="0.075" />
+          <geom type="mesh" mesh="ll2" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.65098 0.61961 0.58824 1" />
+          <geom rgba="0 0.7 0.3 0.5" type="cylinder" pos="0.0 0.0 -0.01" quat="1.0 0.0 0.0 0.0" size="0.03 0.02" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
+          <body name="ll3" pos="0 0 -0.0455" quat="1.0 0.0 0.0 0.0">
+            <inertial mass="5.049" pos="0.01087 -4.44e-05 -0.18406" quat="0.706566 0.036258 0.0363586 0.705782" diaginertia="0.23235 0.23924 0.011741" />
+            <joint name="left_leg_hip_pitch" type="hinge" pos="0.0 0.0 0.0" axis="0 -1 0" range="-1.4 0.34" damping="0.0" stiffness="0.0" armature="0.05" frictionloss="0.075" />
+            <geom type="mesh" mesh="ll3" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.89804 0.91765 0.92941 1" />
+            <geom rgba="0 0.7 0.3 0.5" type="box" pos="0.0 0.0 -0.18" quat="1.0 0.0 0.0 0.0" size="0.03 0.03 0.16" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
+            <body name="ll4" pos="0 0 -0.3596" quat="1.0 0.0 0.0 0.0">
+              <inertial mass="1.993" pos="-0.0029 -0.00028 -0.231" quat="0.731204 -0.00659271 -0.00712089 0.68209" diaginertia="0.13785 0.13792 0.001226" />
+              <joint name="left_knee" type="hinge" pos="0.0 0.0 0.0" axis="0 1 0" range="0 1.4" damping="0.0" stiffness="0.0" armature="0.05" frictionloss="0.075" />
+              <geom type="mesh" mesh="ll4" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.89804 0.91765 0.92941 1" />
+              <geom rgba="0 0.7 0.3 0.5" type="box" pos="0.0 0.0 -0.20" quat="1.0 0.0 0.0 0.0" size="0.025 0.025 0.18" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
+              <body name="ll5" pos="0.015 0 -0.44" quat="1.0 0.0 0.0 0.0">
+                <inertial mass="1.118" pos="0.0296 -0.002 -0.034" quat="0.0842257 0.672271 0.0840174 0.730684" diaginertia="0.000587 0.005066 0.00537" />
+                <joint name="left_leg_ank_pitch" type="hinge" pos="0.0 0.0 0.0" axis="0 1 0" range="-0.87 0.87" damping="0.0" stiffness="0.0" armature="0.05" frictionloss="0.075" />
+                <geom type="mesh" mesh="ll5" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.89804 0.91765 0.92941 1" />
+                <geom rgba="0 0.7 0.3 0.5" type="box" pos="0.06 0.00 -0.03" quat="1.0 0.0 0.0 0.0" size="0.11 0.03 0.015" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="rl1" pos="-0.0553058 -0.0925 -0.043" quat="1.0 0.0 0.0 0.0">
+        <inertial mass="1.73" pos="0.0203 0.0203 -0.021882" quat="0.678165 0.678164 -0.200231 0.200231" diaginertia="0.00064365 0.00040381 0.00057925" />
+        <joint name="right_leg_hip_roll" type="hinge" pos="0.0 0.0 0.0" axis="-1 0 0" range="-0.17 1.57" damping="0.0" stiffness="0.0" armature="0.05" frictionloss="0.175" />
+        <geom type="mesh" mesh="rl1" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="1 1 1 1" />
+        <geom rgba="0 0.7 0.3 0.5" type="cylinder" pos="0.02 0.0 0.0" quat="0.707 0.0 0.707 0.0" size="0.025 0.025" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
+        <body name="rl2" pos="0.0540088 0 -0.0425" quat="1.0 0.0 0.0 0.0">
+          <inertial mass="0.55" pos="-0.011966 -9.5758e-09 -0.023875" quat="0.44166 0.44166 -0.552211 0.552211" diaginertia="0.00030663 0.00020556 0.00040354" />
+          <joint name="right_leg_hip_yaw" type="hinge" pos="0.0 0.0 0.0" axis="0 0 1" range="-0.79 0.79" damping="0.0" stiffness="0.0" armature="0.05" frictionloss="0.075" />
+          <geom type="mesh" mesh="rl2" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.65098 0.61961 0.58824 1" />
+          <geom rgba="0 0.7 0.3 0.5" type="cylinder" pos="0.0 0.0 -0.01" quat="1.0 0.0 0.0 0.0" size="0.03 0.02" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
+          <body name="rl3" pos="0 0 -0.0455" quat="1.0 0.0 0.0 0.0">
+            <inertial mass="5.049" pos="0.01087 -4.44e-05 -0.19733" quat="0.706566 0.036258 0.0363586 0.705782" diaginertia="0.23235 0.23924 0.011741" />
+            <joint name="right_leg_hip_pitch" type="hinge" pos="0.0 0.0 0.0" axis="0 -1 0" range="-1.4 0.34" damping="0.0" stiffness="0.0" armature="0.05" frictionloss="0.075" />
+            <geom type="mesh" mesh="rl3" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.89804 0.91765 0.92941 1" />
+            <geom rgba="0 0.7 0.3 0.5" type="box" pos="0.0 0.0 -0.18" quat="1.0 0.0 0.0 0.0" size="0.03 0.03 0.16" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
+            <body name="rl4" pos="0 0 -0.3596" quat="1.0 0.0 0.0 0.0">
+              <inertial mass="1.993" pos="-0.0029 -0.00028 -0.231" quat="0.731204 -0.00659271 -0.00712089 0.68209" diaginertia="0.13785 0.13792 0.001226" />
+              <joint name="right_knee" type="hinge" pos="0.0 0.0 0.0" axis="0 1 0" range="0 1.4" damping="0.0" stiffness="0.0" armature="0.05" frictionloss="0.075" />
+              <geom type="mesh" mesh="rl4" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.89804 0.91765 0.92941 1" />
+              <geom rgba="0 0.7 0.3 0.5" type="box" pos="0.0 0.0 -0.20" quat="1.0 0.0 0.0 0.0" size="0.025 0.025 0.18" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
+              <body name="rl5" pos="0.015 0 -0.44" quat="1.0 0.0 0.0 0.0">
+                <inertial mass="1.118" pos="0.0296 -0.002 -0.034" quat="0.0842257 0.672271 0.0840174 0.730684" diaginertia="0.000587 0.005066 0.00537" />
+                <joint name="right_leg_ank_pitch" type="hinge" pos="0.0 0.0 0.0" axis="0 -1 0" range="-0.87 0.87" damping="0.0" stiffness="0.0" armature="0.05" frictionloss="0.075" />
+                <geom type="mesh" mesh="rl5" contype="0" conaffinity="0" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" rgba="0.89804 0.91765 0.92941 1" />
+                <geom rgba="0 0.7 0.3 0.5" type="box" pos="0.06 0.00 -0.03" quat="1.0 0.0 0.0 0.0" size="0.11 0.03 0.015" contype="1" conaffinity="1" friction="1.0 0.005 0.0001" />
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+    <light pos="0 0 3.5" dir="0 0 -1" directional="true" />
+    <geom name="floor" size="0 0 0.05" type="plane" material="groundplane" condim="3" conaffinity="15"  friction=".5 0.005 0.0001"  />
+  </worldbody>
+  <actuator>
+    <motor name="left_leg_hip_roll_motor"   joint="left_leg_hip_roll"   ctrlrange="-60.0 60.0" />
+    <motor name="left_leg_hip_yaw_motor"    joint="left_leg_hip_yaw"    ctrlrange="-33.0 33.0" />
+    <motor name="left_leg_hip_pitch_motor"  joint="left_leg_hip_pitch"  ctrlrange="-300.0 300.0" />
+    <motor name="left_knee_motor"           joint="left_knee"           ctrlrange="-300.0 300.0" />
+    <motor name="left_leg_ank_pitch_motor"  joint="left_leg_ank_pitch"  ctrlrange="-50.0 50.0" />
+    <motor name="right_leg_hip_roll_motor"  joint="right_leg_hip_roll"  ctrlrange="-60.0 60.0" />
+    <motor name="right_leg_hip_yaw_motor"   joint="right_leg_hip_yaw"   ctrlrange="-33.0 33.0" />
+    <motor name="right_leg_hip_pitch_motor" joint="right_leg_hip_pitch" ctrlrange="-300.0 300.0" />
+    <motor name="right_knee_motor"          joint="right_knee"          ctrlrange="-300.0 300.0" />
+    <motor name="right_leg_ank_pitch_motor" joint="right_leg_ank_pitch" ctrlrange="-50.0 50.0" />
+  </actuator>
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0" />
+    <rgba haze="0.15 0.25 0.35 1" />
+    <global azimuth="160" elevation="-20" />
+  </visual>
+</mujoco>

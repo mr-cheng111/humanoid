@@ -27,18 +27,16 @@
 #
 # Copyright (c) 2024 Beijing RobotEra TECHNOLOGY CO.,LTD. All rights reserved.
 
-from itertools import product
-
 from humanoid.envs.custom.humanoid_config import XBotLCfg, XBotLCfgPPO
 
 
-class MiaoArmCfg(XBotLCfg):
+class B1Cfg(XBotLCfg):
     """
-    Configuration class for the XBotL humanoid robot.
+    Configuration class for the B1 humanoid robot.
     """
     class env(XBotLCfg.env):
         # change the observation dim
-        num_active_dofs = 19
+        num_active_dofs = 10
         num_passive_dofs = 0
         num_commands = 5
 
@@ -66,15 +64,13 @@ class MiaoArmCfg(XBotLCfg):
         torque_limit = 1.0
 
     class asset(XBotLCfg.asset):
-        file = '{LEGGED_GYM_ROOT_DIR}/resources/robots/miao_arm/mjcf/robot.xml'
+        file = '{LEGGED_GYM_ROOT_DIR}/resources/robots/b1/mjcf/b1.xml'
 
-        name = "miao_arm"
-        foot_names = ["leg_l5_link", "leg_r5_link"]
-        knee_names = ["leg_l4_link", "leg_r4_link"]
+        name = "b1"
+        foot_names = ["ll5", "rl5"]
+        knee_names = ["ll4", "rl4"]
 
         terminate_after_contacts_on = ['base_link']
-        for lr, name in product(['l', 'r'], ["shoulder_pitch", "shoulder_roll", "shoulder_yaw", "arm_pitch"]):
-            terminate_after_contacts_on.append(f'{lr}_{name}_link')
         penalize_contacts_on = ["base_link"]
         self_collisions = 0  # 1 to disable, 0 to enable...bitwise filter
         flip_visual_attachments = False
@@ -111,27 +107,47 @@ class MiaoArmCfg(XBotLCfg):
             height_measurements = 0.1
 
     class init_state(XBotLCfg.init_state):
-        pos = [0.0, 0.0, 0.75]
+        pos = [0.0, 0.0, 0.975]
 
-        default_joint_angles = {"loin_yaw_joint": 0}
-        for lr, idx in product(['l', 'r'], range(1, 6)):
-            default_joint_angles[f'leg_{lr}{idx}_joint'] = 0
-        for lr, name in product(['l', 'r'], ["shoulder_pitch", "shoulder_roll", "shoulder_yaw", "arm_pitch"]):
-            default_joint_angles[f'{lr}_{name}_joint'] = 0.
+        default_joint_angles = {
+            "left_leg_hip_roll": 0.0,
+            "left_leg_hip_yaw": 0.0,
+            "left_leg_hip_pitch": 0.0,
+            "left_knee": 0.0,
+            "left_leg_ank_pitch": 0.0,
+            "right_leg_hip_roll": 0.0,
+            "right_leg_hip_yaw": 0.0,
+            "right_leg_hip_pitch": 0.0,
+            "right_knee": 0.0,
+            "right_leg_ank_pitch": 0.0,
+        }
 
     class control(XBotLCfg.control):
-        stiffness = {"loin_yaw_joint": 30.}
-        for lr, idx, value in product(['l', 'r'], range(1, 6), [30., 30., 30., 30., 30]):
-            stiffness[f'leg_{lr}{idx}_joint'] = value
-        for lr, name, value in product(['l', 'r'], ["shoulder_pitch", "shoulder_roll", "shoulder_yaw", "arm_pitch"], [30., 30., 30., 30.,]):
-            stiffness[f'{lr}_{name}_joint'] = value
+        stiffness = {
+            "left_leg_hip_roll": 30.0,
+            "left_leg_hip_yaw": 30.0,
+            "left_leg_hip_pitch": 30.0,
+            "left_knee": 30.0,
+            "left_leg_ank_pitch": 30.0,
+            "right_leg_hip_roll": 30.0,
+            "right_leg_hip_yaw": 30.0,
+            "right_leg_hip_pitch": 30.0,
+            "right_knee": 30.0,
+            "right_leg_ank_pitch": 30.0,
+        }
 
-        damping = {"loin_yaw_joint": 3.}
-        for lr, idx, value in product(['l', 'r'], range(1, 6), [3.] * 5):
-            damping[f'leg_{lr}{idx}_joint'] = value
-        for lr, name, value in product(['l', 'r'], ["shoulder_pitch", "shoulder_roll", "shoulder_yaw", "arm_pitch"],
-                                       [3.] * 4):
-            damping[f'{lr}_{name}_joint'] = value
+        damping = {
+            "left_leg_hip_roll": 3.0,
+            "left_leg_hip_yaw": 3.0,
+            "left_leg_hip_pitch": 3.0,
+            "left_knee": 3.0,
+            "left_leg_ank_pitch": 3.0,
+            "right_leg_hip_roll": 3.0,
+            "right_leg_hip_yaw": 3.0,
+            "right_leg_hip_pitch": 3.0,
+            "right_knee": 3.0,
+            "right_leg_ank_pitch": 3.0,
+        }
 
         # action scale: target angle = actionScale * action + defaultAngle
         action_scale = 0.25
@@ -173,7 +189,7 @@ class MiaoArmCfg(XBotLCfg):
             heading = [-3.14, 3.14]
 
     class rewards(XBotLCfg.rewards):
-        base_height_target = 0.75
+        base_height_target = 0.975
         min_dist = 0.2
         max_dist = 0.5
         # put some settings here for LLM parameter tuning
@@ -221,7 +237,7 @@ class MiaoArmCfg(XBotLCfg):
         clip_actions = 18.
 
 
-class MiaoArmfgPPO(XBotLCfgPPO):
+class B1CfgPPO(XBotLCfgPPO):
     seed = 5
     runner_class_name = 'OnPolicyRunner'   # DWLOnPolicyRunner
 
@@ -245,4 +261,4 @@ class MiaoArmfgPPO(XBotLCfgPPO):
 
         # logging
         save_interval = 50  # Please check for potential savings every `save_interval` iterations.
-        experiment_name = 'miao_arm_ppo'
+        experiment_name = 'b1_ppo'

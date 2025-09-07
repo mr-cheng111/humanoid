@@ -13,7 +13,7 @@ cd humanoid
 TASK="b1_ppo"
 RUN_NAME="b1_v1"
 SIM_DEVICE="cuda:0"
-RL_DEVICE="0"
+RL_DEVICE="cuda:0"
 
 echo "Starting B1 policy evaluation with the following parameters:"
 echo "Task: $TASK"

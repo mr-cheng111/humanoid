@@ -12,6 +12,7 @@ from humanoid.utils.terrain import  HumanoidTerrain
 class B1FreeEnv(XBotLFreeEnv):
     def __init__(self, cfg: LeggedRobotCfg, sim_params, physics_engine, sim_device, headless):
         super().__init__(cfg, sim_params, physics_engine, sim_device, headless)
+
     def compute_ref_state(self):
         phase = self._get_phase()
         sin_pos = torch.sin(2 * torch.pi * phase)
@@ -19,24 +20,27 @@ class B1FreeEnv(XBotLFreeEnv):
         sin_pos_r = sin_pos.clone()
         self.ref_dof_pos = torch.zeros_like(self.dof_pos)
         scale_1 = self.cfg.rewards.target_joint_pos_scale
-        scale_2 = 2 * scale_1
+        scale_2 = 2.2 * scale_1
 
         # B1 has 10 DOFs: left leg (5) + right leg (5)
         # left_leg_hip_roll(0), left_leg_hip_yaw(1), left_leg_hip_pitch(2), left_knee(3), left_leg_ank_pitch(4)
         # right_leg_hip_roll(5), right_leg_hip_yaw(6), right_leg_hip_pitch(7), right_knee(8), right_leg_ank_pitch(9)
         
         # left foot stance phase set to default joint pos
-        sin_pos_l[sin_pos_l > -0.1] = 0
-        self.ref_dof_pos[:, 2] = sin_pos_l * scale_1      # left_leg_hip_pitch
+        sin_pos_l[sin_pos_l > 0.0] = 0
+        sin_pos_l[torch.abs(sin_pos) < 0.1] = 0
+        self.ref_dof_pos[:, 2] = -sin_pos_l * scale_1      # left_leg_hip_pitch
         self.ref_dof_pos[:, 3] = -sin_pos_l * scale_2     # left_knee
         self.ref_dof_pos[:, 4] = sin_pos_l * scale_1      # left_leg_ank_pitch
         
         # right foot stance phase set to default joint pos
-        sin_pos_r[sin_pos_r < 0.1] = 0
-        self.ref_dof_pos[:, 7] = -sin_pos_r * scale_1     # right_leg_hip_pitch
+        sin_pos_r[sin_pos_r < 0.0] = 0
+        sin_pos_r[torch.abs(sin_pos) < 0.1] = 0
+        self.ref_dof_pos[:, 7] = sin_pos_r * scale_1     # right_leg_hip_pitch
         self.ref_dof_pos[:, 8] = sin_pos_r * scale_2      # right_knee
         self.ref_dof_pos[:, 9] = -sin_pos_r * scale_1     # right_leg_ank_pitch
-
+        # Double support phase
+        #self.ref_dof_pos[torch.abs(sin_pos) < 0.1] = 0
         self.ref_action = 2 * self.ref_dof_pos
 
     def get_symm_dof(self, value):
@@ -45,8 +49,7 @@ class B1FreeEnv(XBotLFreeEnv):
         yaw_or_roll = axis[:, 0].abs().bool() | axis[:, 2].abs().bool()
 
         # B1 symmetry: swap left and right legs (5 DOFs each)
-        res[:, 0:5] = torch.roll(res[:, 0:10], shifts=5, dims=-1)[:, 0:5]  # left -> right
-        res[:, 5:10] = torch.roll(res[:, 0:10], shifts=-5, dims=-1)[:, 5:10]  # right -> left
+        res[:, 0:10] = torch.roll(res[:, 0:10], shifts=5, dims=-1)[:, 0:10]  # left -> right
         res[:, yaw_or_roll] *= -1
         return res
 

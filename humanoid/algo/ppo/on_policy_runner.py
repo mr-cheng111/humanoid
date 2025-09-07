@@ -111,12 +111,15 @@ class OnPolicyRunner:
     def learn(self, num_learning_iterations, init_at_random_ep_len=False):
         # initialize writer
         if self.log_dir is not None and self.writer is None:
-            # wandb.init(
-            #     project="XBot",
-            #     sync_tensorboard=True,
-            #     name=self.wandb_run_name,
-            #     config=self.all_cfg,
-            # )
+            # Initialize wandb
+            project_name = os.environ.get('WANDB_PROJECT', 'humanoid-gym')
+            wandb.init(
+                project=project_name,
+                sync_tensorboard=True,
+                name=self.wandb_run_name,
+                config=self.all_cfg,
+                entity=os.environ.get('WANDB_ENTITY', None),
+            )
             self.writer = SummaryWriter(log_dir=self.log_dir, flush_secs=10)
         if init_at_random_ep_len:
             self.env.episode_length_buf = torch.randint_like(
@@ -198,6 +201,9 @@ class OnPolicyRunner:
                 self.log_dir, "model_{}.pt".format(self.current_learning_iteration)
             )
         )
+        # Finish wandb run
+        if wandb.run is not None:
+            wandb.finish()
 
     def log(self, locs, width=80, pad=35):
         self.tot_timesteps += self.num_steps_per_env * self.env.num_envs

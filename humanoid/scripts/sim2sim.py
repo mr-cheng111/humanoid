@@ -132,11 +132,12 @@ def run_mujoco(policy, cfg):
             obs[0, 2] = cmd.vx
             obs[0, 3] = cmd.vy
             obs[0, 4] = cmd.dyaw
-            obs[0, 5:5+19] = q
-            obs[0, 5+19:5+19*2] = dq
-            obs[0, 5+19*2:5+19*3] = action
-            obs[0, 5+19*3:5+19*3+3] = omega
-            obs[0, 5+19*3+3:5+19*3+6] = eu_ang
+            num_dof = len(q)  # Use actual number of DOFs (10 for B1)
+            obs[0, 5:5+num_dof] = q
+            obs[0, 5+num_dof:5+num_dof*2] = dq
+            obs[0, 5+num_dof*2:5+num_dof*3] = action
+            obs[0, 5+num_dof*3:5+num_dof*3+3] = omega
+            obs[0, 5+num_dof*3+3:5+num_dof*3+6] = eu_ang
 
             obs = np.clip(obs, -cfg.normalization.clip_observations, cfg.normalization.clip_observations)
 
@@ -178,15 +179,25 @@ if __name__ == '__main__':
     class Sim2simCfg(MiaoArmCfg):
 
         class sim_config:
-            mujoco_model_path = f'{LEGGED_GYM_ROOT_DIR}/resources/robots/miao_arm/mjcf/robot.xml'
+            mujoco_model_path = f'{LEGGED_GYM_ROOT_DIR}/resources/robots/b1/mjcf/b1.xml'
             sim_duration = 60.0
             dt = 0.001
             decimation = 10
 
         class robot_config:
-            kps = np.array([50.] + [30.] * 18, dtype=np.double)
-            kds = np.array([5.] + [3.] * 18, dtype=np.double)
-            tau_limit = 28. * np.ones(19, dtype=np.double)
+            kps = np.array([200, 300, 300, 300, 300, 200, 300, 300, 300, 300], dtype=np.double)
+            kds = np.array([7, 15, 15, 15, 15, 7, 15, 15, 15, 15], dtype=np.double)
+            tau_limit = np.array([200, 300, 300, 300, 300, 200, 300, 300, 300, 300], dtype=np.double) * 0.85
+        
+        class env:
+            frame_stack = 15
+            num_single_obs = 41  # 5 (cmd) + 10 (pos) + 10 (vel) + 10 (action) + 3 (ang_vel) + 3 (euler)
+            num_observations = 41 * 15
+            num_actions = 10
+        
+        class normalization:
+            clip_observations = 18.0
+            clip_actions = 1.0
 
     policy = torch.jit.load(args.load_model)
     run_mujoco(policy, Sim2simCfg())

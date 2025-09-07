@@ -112,41 +112,42 @@ class B1Cfg(XBotLCfg):
         default_joint_angles = {
             "left_leg_hip_roll": 0.0,
             "left_leg_hip_yaw": 0.0,
-            "left_leg_hip_pitch": 0.0,
-            "left_knee": 0.0,
-            "left_leg_ank_pitch": 0.0,
+            "left_leg_hip_pitch": 0.15,
+            "left_knee": 0.35,
+            "left_leg_ank_pitch": -0.185,
             "right_leg_hip_roll": 0.0,
             "right_leg_hip_yaw": 0.0,
-            "right_leg_hip_pitch": 0.0,
-            "right_knee": 0.0,
-            "right_leg_ank_pitch": 0.0,
+            "right_leg_hip_pitch": 0.15,
+            "right_knee": 0.35,
+            "right_leg_ank_pitch": -0.185,
         }
 
     class control(XBotLCfg.control):
         stiffness = {
-            "left_leg_hip_roll": 30.0,
-            "left_leg_hip_yaw": 30.0,
-            "left_leg_hip_pitch": 30.0,
-            "left_knee": 30.0,
+            "left_leg_hip_roll": 160.0,
+            "left_leg_hip_yaw": 130.0,
+            "left_leg_hip_pitch": 200.0,
+            "left_knee": 180.0,
             "left_leg_ank_pitch": 30.0,
-            "right_leg_hip_roll": 30.0,
-            "right_leg_hip_yaw": 30.0,
-            "right_leg_hip_pitch": 30.0,
-            "right_knee": 30.0,
+            
+            "right_leg_hip_roll": 130.0,
+            "right_leg_hip_yaw": 130.0,
+            "right_leg_hip_pitch": 200.0,
+            "right_knee": 180.0,
             "right_leg_ank_pitch": 30.0,
         }
 
         damping = {
-            "left_leg_hip_roll": 3.0,
-            "left_leg_hip_yaw": 3.0,
-            "left_leg_hip_pitch": 3.0,
-            "left_knee": 3.0,
-            "left_leg_ank_pitch": 3.0,
-            "right_leg_hip_roll": 3.0,
-            "right_leg_hip_yaw": 3.0,
-            "right_leg_hip_pitch": 3.0,
-            "right_knee": 3.0,
-            "right_leg_ank_pitch": 3.0,
+            "left_leg_hip_roll": 8.0,
+            "left_leg_hip_yaw": 8,
+            "left_leg_hip_pitch": 10.0,
+            "left_knee": 10.0,
+            "left_leg_ank_pitch": 6.0,
+            "right_leg_hip_roll": 8.0,
+            "right_leg_hip_yaw": 8.0,
+            "right_leg_hip_pitch": 10.0,
+            "right_knee": 10.0,
+            "right_leg_ank_pitch": 6.0,
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
@@ -174,13 +175,24 @@ class B1Cfg(XBotLCfg):
             contact_collection = 2
 
     class domain_rand(XBotLCfg.domain_rand):
-        pass
+        randomize_friction = True
+        friction_range = [0.1, 1.5]
+        randomize_base_mass = True
+        added_mass_range = [-1, 1]
+        push_robots = True
+        push_interval_s = 4
+        max_push_vel_xy = 0.2
+        max_push_ang_vel = 0.4
+        # dynamic randomization
+        action_delay = 0.5
+        action_noise = 0.02
+
 
     class commands(XBotLCfg.commands):
         # Vers: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         num_commands = 4
         resampling_time = 8.  # time before command are changed[s]
-        heading_command = False  # if true: compute ang vel command from heading error
+        heading_command = True  # if true: compute ang vel command from heading error
 
         class ranges(XBotLCfg.commands.ranges):
             lin_vel_x = [-0.3, 0.6]   # min max [m/s]
@@ -193,9 +205,9 @@ class B1Cfg(XBotLCfg):
         min_dist = 0.2
         max_dist = 0.5
         # put some settings here for LLM parameter tuning
-        target_joint_pos_scale = 0.3    # rad
-        target_feet_height = 0.06        # m
-        cycle_time = 0.64                # sec
+        target_joint_pos_scale = 0.15    # rad
+        target_feet_height = 0.03196        # m
+        cycle_time = 0.32                # sec
         # if true negative total rewards are clipped at zero (avoids early termination problems)
         only_positive_rewards = True
         # tracking reward = exp(error*sigma)
@@ -204,18 +216,18 @@ class B1Cfg(XBotLCfg):
 
         class scales(XBotLCfg.rewards.scales):
             # reference motion tracking
-            joint_pos = 1.6
+            joint_pos = 2.0
             feet_clearance = 1.
             feet_contact_number = 1.2
             # gait
-            feet_air_time = 1.
-            foot_slip = -0.05
+            feet_air_time = 1.5
+            foot_slip = -0.1
             feet_distance = 0.2
             knee_distance = 0.2
             # contact
             feet_contact_forces = -0.01
             # vel tracking
-            tracking_lin_vel = 1.2
+            tracking_lin_vel = 1.5
             tracking_ang_vel = 1.1
             vel_mismatch_exp = 0.5  # lin_z; ang x,y
             low_speed = 0.2
@@ -248,7 +260,7 @@ class B1CfgPPO(XBotLCfgPPO):
 
     class algorithm(XBotLCfgPPO.algorithm):
         entropy_coef = 0.001
-        symm_loss_coef = 0.3
+        symm_loss_coef = 0.2
         learning_rate = 1e-5
         num_learning_epochs = 2
         gamma = 0.994
@@ -257,7 +269,7 @@ class B1CfgPPO(XBotLCfgPPO):
 
     class runner(XBotLCfgPPO.runner):
         num_steps_per_env = 60  # per iteration
-        max_iterations = 30001  # number of policy updates
+        max_iterations = 20001  # number of policy updates
 
         # logging
         save_interval = 50  # Please check for potential savings every `save_interval` iterations.
